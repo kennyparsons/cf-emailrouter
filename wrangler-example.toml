@@ -1,0 +1,11 @@
+name = "email-router"
+main = "src/index.js"
+compatibility_date = "2024-04-06"
+
+kv_namespaces = [
+  { binding = "EMAIL_KV", id = "put your id here" },
+  { binding = "API_AUTH", id = "put your id here. " }
+]
+
+[vars]
+WORKER_NAME = "email-router"

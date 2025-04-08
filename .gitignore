@@ -1,0 +1,19 @@
+# Node modules
+node_modules/
+
+# Cloudflare Wrangler directory
+.wrangler/
+
+# Environment variables (for non-sensitive settings)
+.env
+
+# Logs and system files
+*.log
+.DS_Store
+
+#package
+package-lock.json
+package.json
+
+#real wrangler.toml
+wrangler.toml
