@@ -72,19 +72,38 @@ export async function handleEmail(message, env, ctx) {
     // Allow list: if defined, the sender must match an allowed domain or email.
     if (config.allow) {
         let allowed = false;
-        if (config.allow.domains && config.allow.domains.includes(senderDomain)) {
-            allowed = true;
-            log('debug', `Sender domain ${senderDomain} is allowed.`);
+
+        // Check allowed domains.
+        if (config.allow.domains) {
+            for (const allowedDomain of config.allow.domains) {
+                // If the allowed domain contains a wildcard.
+                if (allowedDomain.includes('*')) {
+                    // Convert wildcard to regex: escape non-wildcard parts then replace '*' with '.*'
+                    const regexStr = '^' + allowedDomain.split('*')
+                        .map(part => part.replace(/[-/\\^$+?.()|[\]{}]/g, '\\$&'))
+                        .join('.*') + '$';
+                    const regex = new RegExp(regexStr, 'i');
+                    if (regex.test(senderDomain)) {
+                        allowed = true;
+                        log('debug', `Sender domain ${senderDomain} is allowed by wildcard ${allowedDomain}.`);
+                        break;
+                    }
+                } else if (allowedDomain.toLowerCase() === senderDomain) {
+                    allowed = true;
+                    log('debug', `Sender domain ${senderDomain} is allowed.`);
+                    break;
+                }
+            }
         }
-        if (config.allow.emails && config.allow.emails.includes(sender)) {
+
+        // Check allowed emails if not already allowed.
+        if (!allowed && config.allow.emails && config.allow.emails.includes(sender)) {
             allowed = true;
             log('debug', `Sender email ${sender} is allowed.`);
         }
+
         if (!allowed) {
             log('warn', `Sender ${sender} is not allowed for ${message.to}`);
-            // if (config.logging && config.logging.log_sender_domain) {
-            //     log('warn', `Sender domain ${senderDomain} not allowed for ${message.to}`);
-            // }
             message.setReject("Sender not allowed");
             return;
         }

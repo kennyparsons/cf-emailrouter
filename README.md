@@ -59,6 +59,8 @@ Each alias is defined by a KV entry where the key is the email alias and the val
 }
 ```
 
+> To allow all domains, you can use a wildcard (`"*"`) in the **allow.domains** field. However, wildcard matching is supported only for domains. Wildcards are **not supported** for the **allow.emails** field, and any deny statements do not support wildcards (using them would effectively disable the deny functionality).
+
 Note: Currently, only the `enabled`, `forward_to`, `allow`, and `deny` fields are implemented. Other features will be added in future updates.
 
 ## API Endpoints
@@ -95,7 +97,7 @@ npx wrangler deploy
 - **src/index.js:** Main entry point handling HTTP routes and email events
 - **src/schema.js:** Contains default configuration and helper utilities
 - **src/auth.js:** API key management and authentication
-- **src/routes/email.js:** Handles email routing logic
+- **src/email/main.js:** Handles email routing logic
 - **src/routes/api.js:** API endpoints for managing configurations
 - **wrangler.toml:** Configuration for Cloudflare Worker and KV namespaces
 

@@ -9,3 +9,6 @@ kv_namespaces = [
 
 [vars]
 WORKER_NAME = "email-router"
+
+[observability]
+enabled = true
